@@ -1,0 +1,129 @@
+@import "tailwindcss";
+/* app/globals.css */
+
+/* Definisikan variabel warna untuk Light Mode */
+:root {
+  --background: theme(colors.slate.50);
+  --foreground: theme(colors.slate.950);
+  --card: theme(colors.white);
+  --card-foreground: theme(colors.slate.950);
+  --primary: theme(colors.sky.600);
+  --primary-foreground: theme(colors.white);
+  --secondary: theme(colors.slate.200);
+  --secondary-foreground: theme(colors.slate.800);
+  --destructive: theme(colors.red.600);
+  --destructive-foreground: theme(colors.white);
+  --muted: theme(colors.slate.100);
+  --muted-foreground: theme(colors.slate.500);
+  --accent: theme(colors.sky.50);
+  --accent-foreground: theme(colors.sky.600);
+}
+
+/* Definisikan variabel warna untuk Dark Mode */
+.dark {
+  --background: theme(colors.slate.950);
+  --foreground: theme(colors.slate.50);
+  --card: theme(colors.slate.900);
+  --card-foreground: theme(colors.slate.50);
+  --primary: theme(colors.sky.500);
+  --primary-foreground: theme(colors.white);
+  --secondary: theme(colors.slate.800);
+  --secondary-foreground: theme(colors.slate.100);
+  --destructive: theme(colors.red.500);
+  --destructive-foreground: theme(colors.white);
+  --muted: theme(colors.slate.800);
+  --muted-foreground: theme(colors.slate.400);
+  --accent: theme(colors.sky.900);
+  --accent-foreground: theme(colors.sky.200);
+}
+
+/* Di Tailwind v4.0, kita menggunakan @theme untuk memetakan variabel ini */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+/* app/globals.css */
+
+/* ... kode CSS Anda yang sudah ada ... */
+
+.bg-auth-wave {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-auth-wave::before,
+.bg-auth-wave::after {
+  content: "";
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background-image: linear-gradient(45deg,
+      var(--primary) 0%,
+      var(--primary-foreground) 50%,
+      var(--primary) 100%);
+  animation: moveWave 15s infinite linear;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  border-radius: 50%;
+}
+
+.bg-auth-wave::after {
+  animation-delay: -7.5s;
+  /* Mengatur gelombang kedua agar tidak sinkron */
+  opacity: 0.15;
+}
+
+@keyframes moveWave {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
