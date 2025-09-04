@@ -67,3 +67,56 @@ export async function sendVerificationEmail(userEmail: string, token: string) {
     `,
   });
 }
+export async function sendForgotPasswordEmail(
+  userEmail: string,
+  token: string
+) {
+  // Buat URL reset password lengkap dengan token
+  const resetPasswordUrl = `${process.env.PUBLIC_APP_URL}/reset-password?token=${token}`;
+
+  // Tampilan email dalam format HTML
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background-color: #ffffff;">
+    
+      <div style="text-align:center; margin-bottom: 30px;">
+        <img src="https://ik.imagekit.io/mf1j3kikz/jagad-cloud-logo.png" alt="Jagad Cloud" style="height: 60px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+      </div>
+
+      <h1 style="color:#212121; text-align:center; font-size: 24px; font-weight: bold; margin-bottom: 10px;">Reset Kata Sandi Anda</h1>
+      <p style="text-align:center; color: #757575; font-size: 16px; margin-bottom: 25px;">
+        Kami menerima permintaan untuk mereset kata sandi akun Anda.
+      </p>
+      
+      <p style="text-align:left; color:#424242; line-height: 1.6;">
+        Halo,
+      </p>
+      <p style="text-align:left; color:#424242; line-height: 1.6;">
+        Untuk melanjutkan, silakan klik tombol di bawah ini. Anda akan diarahkan ke halaman di mana Anda dapat membuat kata sandi baru.
+      </p>
+      
+      <p style="text-align:center; margin: 30px 0;">
+        <a href="${resetPasswordUrl}" style="background-color:#d32f2f; color:#fff; padding:15px 25px; text-decoration:none; border-radius:8px; font-weight:bold; font-size: 16px; display: inline-block;">
+          Reset Kata Sandi
+        </a>
+      </p>
+
+      <p style="text-align:left; color:#757575; line-height: 1.6; font-size: 14px;">
+        Tautan ini hanya berlaku selama **satu jam** untuk alasan keamanan.
+      </p>
+      
+      <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;" />
+      
+      <p style="font-size: 12px; color: #9e9e9e; text-align: center;">
+        Jika Anda tidak meminta perubahan kata sandi ini, abaikan email ini. Akun Anda tetap aman.<br/>
+        Ini adalah email otomatis, mohon jangan membalas.
+      </p>
+    </div>
+  `;
+
+  // Kirim email
+  await sendEmail({
+    to: userEmail,
+    subject: "Lupa Password - Jagad Cloud",
+    html: emailHtml,
+  });
+}

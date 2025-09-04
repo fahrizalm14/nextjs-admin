@@ -1,5 +1,6 @@
 import { TokenPayload } from "@/types/auth";
 import { JWTPayload, SignJWT, errors, jwtVerify } from "jose";
+import { ForbiddenError } from "../error/custom";
 
 // Gunakan fallback jika env variable tidak tersedia
 const JWT_SECRET = new TextEncoder().encode(
@@ -9,11 +10,14 @@ const REFRESH_TOKEN_SECRET = new TextEncoder().encode(
   process.env.REFRESH_TOKEN_SECRET ?? "your-refresh-secret-key"
 );
 
-export const createAccessToken = async (payload: TokenPayload) => {
+export const createAccessToken = async (
+  payload: TokenPayload,
+  expire = "15m"
+) => {
   const jwtPayload: JWTPayload = { ...payload };
   return await new SignJWT(jwtPayload)
     .setProtectedHeader({ alg: "HS256" })
-    .setExpirationTime("15m")
+    .setExpirationTime(expire)
     .sign(JWT_SECRET);
 };
 
@@ -33,7 +37,7 @@ export const verifyAccessToken = async (
     return payload as unknown as TokenPayload; // ✅ convert ke unknown dulu
   } catch (err) {
     console.error("❌ Access token invalid:", err);
-    throw new Error("Invalid or expired access token");
+    throw new ForbiddenError("Invalid or expired access token");
   }
 };
 
@@ -53,6 +57,6 @@ export const verifyRefreshToken = async (
     } else {
       console.error("🚨 Error lain saat verifikasi refresh token:", err);
     }
-    throw new Error("Invalid or expired refresh token");
+    throw new ForbiddenError("Invalid or expired refresh token");
   }
 };

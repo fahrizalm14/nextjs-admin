@@ -4,7 +4,6 @@ import { useToast } from "@/hooks/provider/ToastProvider";
 import { useUser } from "@/hooks/provider/UserProvider";
 import { useFetch } from "@/hooks/useFetch";
 import { ILoginRes } from "@/types/auth";
-import { RiGoogleFill } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -138,8 +137,8 @@ export default function LoginPage() {
               />
             </div>
             <p className="text-sm text-red-500">{error}</p>
-            {/* <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center">
+            <div className="flex items-center justify-between text-sm">
+              {/* <div className="flex items-center">
                 <input
                   id="remember-me"
                   name="remember-me"
@@ -152,14 +151,14 @@ export default function LoginPage() {
                 >
                   Remember me
                 </label>
-              </div>
+              </div> */}
               <Link
                 href="/forgot-password"
                 className="font-medium text-primary hover:text-primary/80"
               >
                 Forgot Password?
               </Link>
-            </div> */}
+            </div>
             <button
               type="submit"
               disabled={loading}
@@ -187,7 +186,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className="relative mt-6">
+          {/* <div className="relative mt-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-muted" />
             </div>
@@ -204,7 +203,7 @@ export default function LoginPage() {
           >
             <RiGoogleFill size={18} />
             Google
-          </button>
+          </button> */}
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Dont have an account?{" "}

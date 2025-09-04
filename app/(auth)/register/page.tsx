@@ -1,7 +1,50 @@
-import { RiGoogleFill } from "@remixicon/react";
+"use client";
+
+import { useToast } from "@/hooks/provider/ToastProvider";
+import { useFetch } from "@/hooks/useFetch";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function RegisterPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const router = useRouter();
+  const { loading, call, error } = useFetch();
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Buat payload sesuai format yang diminta
+    const payload = {
+      name,
+      email,
+      password,
+    };
+
+    const response = await call({
+      url: "/api/register", // Ganti dengan endpoint API pendaftaran Anda
+      method: "POST",
+      data: payload,
+    });
+
+    if (response) {
+      toast("Pendaftaran berhasil! Silakan login.", "success");
+      // Arahkan ke halaman login setelah pendaftaran berhasil
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
+    } else {
+      // useFetch akan otomatis menampilkan error, tapi bisa ditangani di sini juga
+      if (error) {
+        toast(error, "error");
+      }
+    }
+  };
+
   return (
     <div className="grid md:grid-cols-2 min-h-screen">
       {/* Visual background section */}
@@ -26,7 +69,7 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="name"
@@ -39,6 +82,9 @@ export default function RegisterPage() {
                 id="name"
                 placeholder="John Doe"
                 className="mt-1 block w-full rounded-md border-0 py-2 px-3 text-card-foreground shadow-sm ring-1 ring-inset ring-muted focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-muted/50"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
               />
             </div>
             <div>
@@ -53,6 +99,9 @@ export default function RegisterPage() {
                 id="email"
                 placeholder="you@example.com"
                 className="mt-1 block w-full rounded-md border-0 py-2 px-3 text-card-foreground shadow-sm ring-1 ring-inset ring-muted focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-muted/50"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div>
@@ -67,34 +116,23 @@ export default function RegisterPage() {
                 id="password"
                 placeholder="••••••••"
                 className="mt-1 block w-full rounded-md border-0 py-2 px-3 text-card-foreground shadow-sm ring-1 ring-inset ring-muted focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-muted/50"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
             <button
               type="submit"
               className="w-full justify-center rounded-md bg-primary py-2 px-4 text-sm font-semibold text-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              disabled={loading}
             >
-              Sign up
+              {loading ? "Memproses..." : "Sign up"}
             </button>
           </form>
 
-          <div className="relative mt-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-muted" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-muted bg-card py-2 px-4 text-sm font-semibold text-card-foreground shadow-sm hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-muted"
-          >
-            <RiGoogleFill size={18} />
-            Google
-          </button>
+          {error && (
+            <p className="mt-4 text-center text-sm text-destructive">{error}</p>
+          )}
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{" "}

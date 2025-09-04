@@ -1,7 +1,7 @@
 // services/authService.ts
 
 import prisma from "@/libs/db/prisma";
-import { sendVerificationEmail } from "@/libs/email";
+import { sendForgotPasswordEmail, sendVerificationEmail } from "@/libs/email";
 import {
   BadRequestError,
   ConflictError,
@@ -12,9 +12,10 @@ import {
 import {
   createAccessToken,
   createRefreshToken,
+  verifyAccessToken,
   verifyRefreshToken,
 } from "@/libs/tokens";
-import { IUserInfo, TokenPayload } from "@/types/auth";
+import { IUserInfo, Role, TokenPayload } from "@/types/auth";
 import bcrypt from "bcryptjs";
 import { serialize } from "cookie";
 import { createEmailVerification } from "./tokenize";
@@ -195,13 +196,14 @@ export const forgotPassword = async (email: string): Promise<void> => {
     throw new NotFoundError("User not found with this email address.");
   }
 
-  // TODO: Tambahkan logika untuk mengirim email reset password
-  // Misalnya, buat token unik dan kirimkan ke email pengguna
   console.log(`Sending password reset link to ${email}...`);
-  // Implementasi pengiriman email bisa menggunakan Nodemailer, SendGrid, dll.
-  // Contoh:
-  // const resetToken = createResetToken({ userId: user.id });
-  // await sendPasswordResetEmail(user.email, resetToken);
+
+  const token = await createAccessToken(
+    { role: user.role as Role, userId: user.id, isPublic: true },
+    "1d"
+  );
+
+  await sendForgotPasswordEmail(email, token);
 };
 
 /**
@@ -231,4 +233,27 @@ export const logoutUser = async (refreshToken: string): Promise<void> => {
   });
 
   // Cookie dihapus di API route
+};
+
+export const resetPassword = async (
+  token: string,
+  password: string
+): Promise<void> => {
+  if (!token || !password) {
+    throw new BadRequestError("Token and password are required.");
+  }
+
+  const tokenPayload = await verifyAccessToken(token);
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await prisma.user.update({
+    data: {
+      password: hashedPassword,
+    },
+    where: { id: tokenPayload.userId },
+  });
+
+  if (user.password !== hashedPassword)
+    throw new BadRequestError("Gagal ganti password.");
 };

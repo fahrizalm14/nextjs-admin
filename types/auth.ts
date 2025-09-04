@@ -4,6 +4,7 @@ import { MenuItem } from "./layout";
 export interface TokenPayload {
   userId: string;
   role: Role;
+  isPublic?: boolean; // digunakan untuk api public seperti token lupa password
 }
 
 // Definisikan semua peran
