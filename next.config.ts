@@ -5,11 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["i.pravatar.cc"], // daftar domain yang boleh dipakai untuk <Image />
   },
-  build: {
-    env: {
-      NEXT_OUTPUT_DIRECTORY: "dist",
-    },
-  },
+  distDir: "dist",
 };
 
 export default nextConfig;
